@@ -20,6 +20,7 @@ function refreshWeather(response) {
 
   let image = document.querySelector("#image");
   image.src = response.data.daily[0].condition.icon_url;
+  getForecast(response.data.city);
 }
 
 function formatDate(date) {
@@ -49,7 +50,7 @@ function formatDate(date) {
 
 function searchCity(city) {
   let apiKey = "248a5b083cf5484310345e4f53aedobt";
-  let apiUrl = `https://api.shecodes.io/weather/v1/forecast?query=${city}&key=${apiKey}`;
+  let apiUrl = `https://api.shecodes.io/weather/v1/forecast?query=${city}&key=${apiKey}&units=metric`;
   axios.get(apiUrl).then(refreshWeather);
 }
 
@@ -60,11 +61,18 @@ function searchResults(event) {
   searchCity(searchInput.value);
 }
 
+//forecast api
+function getForecast(city) {
+  let apiKey = "248a5b083cf5484310345e4f53aedobt";
+  let apiUrl = `https://api.shecodes.io/weather/v1/forecast?query=${city}&key=${apiKey}&units=metric`;
+  axios.get(apiUrl).then(displayForecast);
+}
+
 //Weather forecast
-function displayForecast() {
+function displayForecast(response) {
+  console.log(response.data);
   const forecast = document.querySelector("#forecast");
   const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
-
 
   let forecastContent = "";
 
@@ -83,14 +91,11 @@ function displayForecast() {
     `;
   });
 
-
   forecast.innerHTML = forecastContent;
 }
-
 
 let searchForm = document.querySelector("#search-form");
 searchForm.addEventListener("submit", searchResults);
 
 searchCity("Paris");
-
 displayForecast();
